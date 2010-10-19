@@ -96,19 +96,28 @@ if __name__ == '__main__':
   try:
     opts, args = getopt.getopt(
       sys.argv[1:],
-      'cd',
-      ['config', 'base_dir'])
+      'c:d:',
+      ['config=', 'base_dir=', 'log_level='])
   except getopt.GetoptError:
     print "FATAL - Bat command line options / parameter."
     sys.exit(2)
 
   base_dir = '/home/simple_backup'
   config = base_dir + '/lib/simple_backup/config.yaml'
+  log_level = 'INFO'
   for o, a in opts:
     if o in ('-c', '--config'):
       config = a
     if o in ('-d', '--base_dir'):
       base_dir = a
+    if o in ('--log_level'):
+      log_level = a
+
+  logging.basicConfig(
+    level = getattr(logging, log_level),
+    format = '%(asctime)s %(levelname)s %(message)s',
+    filename = '/var/log/simple_backup.log',
+    filemode = 'a')
 
   main(config, base_dir)
   sys.exit(0)
