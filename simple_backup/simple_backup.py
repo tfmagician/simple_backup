@@ -1,8 +1,4 @@
-import yaml
-import logging
-import os
-import commands
-import time
+import yaml, logging, os, commands, time, getopt
 from exceptions import ExecutionError
 from exceptions import ImproperlyConfigured
 
@@ -91,3 +87,28 @@ class SimpleBackup:
         logging.error('Could not create monthly archive.')
         logging.error(result[1])
         raise SystemExit(1)
+
+def main(config, base_dir):
+  sb = SimpleBackup(config, base_dir)
+  sb.main()
+
+if __name__ == '__main__':
+  try:
+    opts, args = getopt.getopt(
+      sys.argv[1:],
+      'cd',
+      ['config', 'base_dir'])
+  except getopt.GetoptError:
+    print "FATAL - Bat command line options / parameter."
+    sys.exit(2)
+
+  base_dir = '/home/simple_backup'
+  config = base_dir + '/lib/simple_backup/config.yaml'
+  for o, a in opts:
+    if o in ('-c', '--config'):
+      config = a
+    if o in ('-d', '--base_dir'):
+      base_dir = a
+
+  main(config, base_dir)
+  sys.exit(0)
