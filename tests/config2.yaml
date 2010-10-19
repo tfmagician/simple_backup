@@ -1,0 +1,4 @@
+hosts:
+  test3_copy3:
+    type: tests.copy3
+    host: test3

@@ -1,0 +1,11 @@
+hosts:
+  test1_copy1:
+    type: tests.copy1
+    host: test1
+    setting1: setting_value1
+    setting2: setting_value2
+  test2_copy2:
+    type: tests.copy2
+    host: test2
+    setting1: setting_value1
+    setting2: setting_value2

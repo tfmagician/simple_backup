@@ -1,0 +1,4 @@
+hosts:
+  test4_copy4:
+    type: tests.copy4
+    host: test4
