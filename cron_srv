@@ -1,0 +1,2 @@
+# m h dom mon dow  command
+00 00 * * *  /home/simple_backup/lib/simple_backup/simple_backup.py
