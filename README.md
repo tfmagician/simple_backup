@@ -5,7 +5,8 @@
 1. git clone git@github.com:tfmagician/SimpleBackup.git 
 2. sudo ./SimpleBackup/setup_server.sh
 3. sudo mv ./SimpleBackup /home/simple_backup/lib
-4. sudo su simple_backup -c 'crontab /home/simple_backup/lib/cron_srv'
+4. sudo chmod -R 755 /home/simple_backup/lib
+5. sudo su simple_backup -c 'crontab /home/simple_backup/lib/cron_srv'
 
 ## On your backup client ##
 

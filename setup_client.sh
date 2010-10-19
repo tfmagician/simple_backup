@@ -1,14 +1,14 @@
 #!/bin/bash
 
-if [ `whoami` != 'root' ]; then
+if [ `/usr/bin/whoami` != 'root' ]; then
   echo 'ERROR: This script needs to run as root.'
   exit 1
 fi
 
-if grep '^simple_backup:' /etc/passwd > /dev/null; then
+if /bin/grep '^simple_backup:' /etc/passwd > /dev/null; then
   echo 'WARNING: User simple_backup already exists.'
 else
-  if useradd -s /bin/bash -m simple_backup; then
+  if /usr/sbin/useradd -s /bin/bash -m simple_backup; then
     echo 'Created simple_backup user.'
   else
     exit 1
@@ -16,7 +16,7 @@ else
 fi
 
 if [ ! -d /home/simple_backup/.ssh ]; then
-  su simple_backup -c 'mkdir /home/simple_backup/.ssh'
+  su simple_backup -c '/bin/mkdir /home/simple_backup/.ssh'
 fi
 su simple_backup -c '/usr/bin/touch /home/simple_backup/.ssh/authorized_keys'
 
