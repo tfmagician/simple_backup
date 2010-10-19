@@ -18,7 +18,7 @@ fi
 if [ ! -d /home/simple_backup/.ssh ]; then
   su simple_backup -c '/bin/mkdir /home/simple_backup/.ssh'
 fi
-su simple_backup -c '/usr/touch /home/simple_backup/.ssh/authorized_keys'
+su simple_backup -c '/bin/touch /home/simple_backup/.ssh/authorized_keys'
 
 cat <<EOF
 You have a step to finish setting up this backup client.
