@@ -23,6 +23,9 @@ class MysqlhotcopyRdiff(BackupExecution):
       logging.error(repr(e))
       raise ImproperlyConfigured()
 
+    if not config.has_key('port'):
+      config['port'] = 22
+
     self.config = config
 
   def exec_cmd(self, cmd):
@@ -45,10 +48,10 @@ class MysqlhotcopyRdiff(BackupExecution):
 
     e = self.exec_cmd
     c = self.config
-    e("ssh %s sudo find /tmp -maxdepth 1 -type d -name '%s' -exec rm -rf {} \;" % (c['host'], c['database']))
-    e('ssh %s sudo mysqlhotcopy -u%s -p%s %s /tmp' % (c['host'], c['user'], c['password'], c['database']))
-    e('ssh %s sudo tar --remove-files --overwrite zxvf /tmp/%s /tmp/%s.tar.gz' % (c['host'], c['database'], c['database']))
-    e('rsync -e ssh test1:/tmp/%s.tar.gz %s/%s.tar.gz' % (c['database'], self.tmp_dir, c['database']))
+    e("ssh %s:%s sudo find /tmp -maxdepth 1 -type d -name '%s' -exec rm -rf {} \;" % (c['host'], c['port'], c['database']))
+    e('ssh %s:%s sudo mysqlhotcopy -u%s -p%s %s /tmp' % (c['host'], c['port'], c['user'], c['password'], c['database']))
+    e('ssh %s:%s sudo tar --remove-files --overwrite zxvf /tmp/%s /tmp/%s.tar.gz' % (c['host'], c['port'], c['database'], c['database']))
+    e("rsync -e 'ssh -p %s' %s:/tmp/%s.tar.gz %s/%s.tar.gz" % (c['port'], c['host'], c['database'], self.tmp_dir, c['database']))
     e('rdiff-backup %s/%s.tar.gz %s' % (self.tmp_dir, c['database'], self.backup_dir))
 
   def rollback(self): pass

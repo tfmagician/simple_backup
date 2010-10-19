@@ -23,6 +23,9 @@ class RsyncRdiff(BackupExecution):
       logging.error(repr(e))
       raise ImproperlyConfigured()
 
+    if not config.has_key('port'):
+      config['port'] = 22
+
     config['directory'] = os.path.abspath(config['directory'])
     self.config = config
 
@@ -47,8 +50,8 @@ class RsyncRdiff(BackupExecution):
     e = self.exec_cmd
     c = self.config
     backup = c['directory'].replace('/', '_')[1:]
-    e('ssh %s sudo tar --remove-files --overwrite zxvf %s /tmp/%s.tar.gz' % (c['host'], c['directory'], backup))
-    e('rsync -e ssh test1:/tmp/%s.tar.gz %s/%s.tar.gz' % (backup, self.tmp_dir, backup))
+    e('ssh %s:%s sudo tar --remove-files --overwrite zxvf %s /tmp/%s.tar.gz' % (c['host'], c['port'], c['directory'], backup))
+    e("rsync -e 'ssh -p %s' %s:/tmp/%s.tar.gz %s/%s.tar.gz" % (c['port'], c['host'], backup, self.tmp_dir, backup))
     e('rdiff-backup %s/%s.tar.gz %s' % (self.tmp_dir, backup, self.backup_dir))
 
   def rollback(self): pass
