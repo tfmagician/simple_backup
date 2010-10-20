@@ -25,7 +25,7 @@ You have a step to finish setting up this backup client.
   1. Execute 'visudo' and add this settings.
     simple_backup ALL=(ALL) NOPASSWD: /usr/bin/find
     simple_backup ALL=(ALL) NOPASSWD: /usr/bin/mysqlhotcopy
-    simple_backup ALL=(ALL) NOPASSWD: /usr/tar
+    simple_backup ALL=(ALL) NOPASSWD: /bin/tar
 EOF
 
 exit 0
