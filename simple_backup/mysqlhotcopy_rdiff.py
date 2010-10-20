@@ -1,7 +1,7 @@
 import logging
 import commands
-from exceptions import ExecutionError
-from exceptions import ImproperlyConfigured
+from sb_exceptions import ExecutionError
+from sb_exceptions import ImproperlyConfigured
 from backup_execution import BackupExecution
 
 class MysqlhotcopyRdiff(BackupExecution):
@@ -48,10 +48,10 @@ class MysqlhotcopyRdiff(BackupExecution):
 
     e = self.exec_cmd
     c = self.config
-    e("ssh %s:%s sudo find /tmp -maxdepth 1 -type d -name '%s' -exec rm -rf {} \;" % (c['host'], c['port'], c['database']))
-    e('ssh %s:%s sudo mysqlhotcopy -u%s -p%s %s /tmp' % (c['host'], c['port'], c['user'], c['password'], c['database']))
-    e('ssh %s:%s sudo tar --remove-files --overwrite zxvf /tmp/%s /tmp/%s.tar.gz' % (c['host'], c['port'], c['database'], c['database']))
-    e("rsync -e 'ssh -p %s' %s:/tmp/%s.tar.gz %s/%s.tar.gz" % (c['port'], c['host'], c['database'], self.tmp_dir, c['database']))
-    e('rdiff-backup %s/%s.tar.gz %s' % (self.tmp_dir, c['database'], self.backup_dir))
+    e("/usr/bin/ssh -p %s %s 'sudo /usr/bin/find /tmp -maxdepth 1 -type d -name %s -exec rm -rf {} \\;'" % (c['port'], c['host'], c['database']))
+    e("/usr/bin/ssh -p %s %s 'sudo /usr/bin/mysqlhotcopy -u %s -p %s %s /tmp'" % (c['port'], c['host'], c['user'], c['password'], c['database']))
+    e("/usr/bin/ssh -p %s %s 'sudo /bin/tar --remove-files --overwrite -cvf /tmp/%s.tar /tmp/%s'" % (c['port'], c['host'], c['database'], c['database']))
+    e("/usr/bin/rsync -e 'ssh -p %s' -z %s:/tmp/%s.tar %s/%s.tar" % (c['port'], c['host'], c['database'], self.tmp_dir, c['database']))
+    e('/usr/bin/rdiff-backup %s %s' % (self.tmp_dir, self.backup_dir))
 
   def rollback(self): pass

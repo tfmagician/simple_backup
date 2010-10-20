@@ -1,6 +1,8 @@
-import yaml, logging, os, commands, time, getopt
-from exceptions import ExecutionError
-from exceptions import ImproperlyConfigured
+#!/usr/bin/python
+
+import yaml, logging, os, commands, time, getopt, sys
+from sb_exceptions import ExecutionError
+from sb_exceptions import ImproperlyConfigured
 
 class SimpleBackup:
   """
@@ -40,7 +42,7 @@ class SimpleBackup:
         dir = os.path.abspath('%s/%s/%s' % (base_dir, type, setting))
         if not os.access(dir, os.F_OK):
           try:
-            os.makedirs(dir, 022)
+            os.makedirs(dir)
           except OSError, e:
             logging.error(repr(e))
             raise SystemExit(1)
@@ -52,7 +54,9 @@ class SimpleBackup:
     """
 
     attr = module.split('.').pop()
-    mod = getattr(__import__(module), attr)
+    mod = __import__(module)
+    if attr != module:
+      mod = getattr(mod, attr)
     return getattr(mod, attr.title().replace('_', ''))
 
   def main(self):
