@@ -21,6 +21,11 @@ else
   exit 1
 fi
 
+if /bin/touch /var/log/simple_backup.log; then
+  echo 'Created the log for SimpleBackup.'
+  chown simple_backup:simple_backup /var/log/simple_backup.log
+fi
+
 cat <<EOF
 You have two steps to finish setting up this backup server.
   1. Execute 'setup_host.sh' script on your backup clients.
