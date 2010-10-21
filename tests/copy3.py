@@ -1,5 +1,5 @@
 from simple_backup.backup_execution import BackupExecution
-from simple_backup.exceptions import ImproperlyConfigured
+from simple_backup.sb_exceptions import ImproperlyConfigured
 
 class Copy3(BackupExecution):
   def __init__(self, *args):

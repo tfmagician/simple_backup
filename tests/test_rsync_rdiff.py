@@ -2,8 +2,8 @@ import unittest
 import commands
 from os import path
 from simple_backup.rsync_rdiff import RsyncRdiff
-from simple_backup.exceptions import ImproperlyConfigured
-from simple_backup.exceptions import ExecutionError
+from simple_backup.sb_exceptions import ImproperlyConfigured
+from simple_backup.sb_exceptions import ExecutionError
 
 # create logging mock object
 import logging
@@ -41,9 +41,9 @@ class RsyncRdiffTestCase(unittest.TestCase):
     self.RsyncRdiff.execute()
 
     expected = [
-      'ssh test1:22 sudo tar --remove-files --overwrite zxvf /path/to/directory /tmp/path_to_directory.tar.gz',
-      "rsync -e 'ssh -p 22' test1:/tmp/path_to_directory.tar.gz /home/backup/tmp/path_to_directory.tar.gz",
-      'rdiff-backup /home/backup/tmp/path_to_directory.tar.gz /home/backup/data']
+      "/usr/bin/ssh -p 22 test1 'sudo /bin/tar --overwrite -cvf /tmp/path_to_directory.tar /path/to/directory'",
+      "/usr/bin/rsync -e 'ssh -p 22' -z test1:/tmp/path_to_directory.tar /home/backup/tmp/path_to_directory.tar",
+      '/usr/bin/rdiff-backup /home/backup/tmp /home/backup/data']
     self.assertEqual(expected, called_cmds)
 
   def test_call_execute_method_when_command_is_failed(self):

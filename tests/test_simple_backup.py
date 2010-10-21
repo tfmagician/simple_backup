@@ -5,8 +5,8 @@ import os
 import time
 import commands
 from simple_backup.simple_backup import SimpleBackup
-from simple_backup.exceptions import ImproperlyConfigured
-from simple_backup.exceptions import ExecutionError
+from simple_backup.sb_exceptions import ImproperlyConfigured
+from simple_backup.sb_exceptions import ExecutionError
 
 # create logging mock object
 import logging
@@ -17,11 +17,17 @@ logging.basicConfig(
   filemode = 'w')
 
 # create os mock object
-os.makedirs = lambda path, code: True
+os.makedirs = lambda path, code = 022: True
 
 class SimpleBackupTestCase(unittest.TestCase):
 
   def setUp(self):
+    reload(time)
+    reload(os)
+    reload(commands)
+
+    os.makedirs = lambda path: True
+
     config_file = os.path.abspath('tests/config1.yaml')
     self.SimpleBackup = SimpleBackup(config_file)
 
@@ -100,8 +106,11 @@ class SimpleBackupTestCase(unittest.TestCase):
       return 0, 'Successful command %s.' % cmd
     commands.getstatusoutput = getstatusoutput
 
+    def access(path, type):
+      return True
+    os.access = access
+
     # create the mock object for time module.
-    reload(time)
     org_strftime = time.strftime
     def strftime(format, t = 'dummy'):
       if format == '%d':
@@ -115,7 +124,7 @@ class SimpleBackupTestCase(unittest.TestCase):
     self.SimpleBackup.archive()
 
     expected = [
-      'tar --remove-files zxvf /home/backup/backup /home/backup/archive/20101001.tar.gz']
+      'tar --remove-files -zcvf /home/backup/archive/20101001.tar.gz /home/backup/backup']
     self.assertEqual(expected, called_cmds)
 
   def test_call_archive_when_command_is_failed(self):
@@ -124,6 +133,10 @@ class SimpleBackupTestCase(unittest.TestCase):
       called_cmds.append(cmd)
       return 1, 'Command failed %s.' % cmd
     commands.getstatusoutput = getstatusoutput
+
+    def access(path, type):
+      return True
+    os.access = access
 
     # create the mock object for time module.
     reload(time)

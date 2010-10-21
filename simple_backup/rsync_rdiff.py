@@ -50,7 +50,7 @@ class RsyncRdiff(BackupExecution):
     e = self.exec_cmd
     c = self.config
     backup = c['directory'].replace('/', '_')[1:]
-    e("/usr/bin/ssh %s -p %s 'sudo /bin/tar --overwrite -cvf /tmp/%s.tar %s'" % (c['host'], c['port'], backup, c['directory']))
+    e("/usr/bin/ssh -p %s %s 'sudo /bin/tar --overwrite -cvf /tmp/%s.tar %s'" % (c['port'], c['host'], backup, c['directory']))
     e("/usr/bin/rsync -e 'ssh -p %s' -z %s:/tmp/%s.tar %s/%s.tar" % (c['port'], c['host'], backup, self.tmp_dir, backup))
     e('/usr/bin/rdiff-backup %s %s' % (self.tmp_dir, self.backup_dir))
 

@@ -2,8 +2,8 @@ import unittest
 import commands
 from os import path
 from simple_backup.mysqlhotcopy_rdiff import MysqlhotcopyRdiff
-from simple_backup.exceptions import ImproperlyConfigured
-from simple_backup.exceptions import ExecutionError
+from simple_backup.sb_exceptions import ImproperlyConfigured
+from simple_backup.sb_exceptions import ExecutionError
 
 # create logging mock object
 import logging
@@ -43,11 +43,11 @@ class MysqlhotcopyRdiffTestCase(unittest.TestCase):
     self.MysqlhotcopyRdiff.execute()
 
     expected = [
-      "ssh test1:22 sudo find /tmp -maxdepth 1 -type d -name 'database' -exec rm -rf {} \;",
-      'ssh test1:22 sudo mysqlhotcopy -ubackup -ppassword database /tmp',
-      'ssh test1:22 sudo tar --remove-files --overwrite zxvf /tmp/database /tmp/database.tar.gz',
-      "rsync -e 'ssh -p 22' test1:/tmp/database.tar.gz /home/backup/tmp/database.tar.gz",
-      'rdiff-backup /home/backup/tmp/database.tar.gz /home/backup/data']
+      "/usr/bin/ssh -p 22 test1 'sudo /usr/bin/find /tmp -maxdepth 1 -type d -name 'database' -exec rm -rf {} \\;'",
+      "/usr/bin/ssh -p 22 test1 'sudo /usr/bin/mysqlhotcopy -u backup -p password database /tmp'",
+      "/usr/bin/ssh -p 22 test1 'sudo /bin/tar --remove-files --overwrite -cvf /tmp/database.tar /tmp/database'",
+      "/usr/bin/rsync -e 'ssh -p 22' -z test1:/tmp/database.tar /home/backup/tmp/database.tar",
+      "/usr/bin/rdiff-backup /home/backup/tmp /home/backup/data"]
     self.assertEqual(expected, called_cmds)
 
   def test_call_execute_method_when_command_is_failed(self):

@@ -48,7 +48,7 @@ class MysqlhotcopyRdiff(BackupExecution):
 
     e = self.exec_cmd
     c = self.config
-    e("/usr/bin/ssh -p %s %s 'sudo /usr/bin/find /tmp -maxdepth 1 -type d -name %s -exec rm -rf {} \\;'" % (c['port'], c['host'], c['database']))
+    e("/usr/bin/ssh -p %s %s 'sudo /usr/bin/find /tmp -maxdepth 1 -type d -name '%s' -exec rm -rf {} \\;'" % (c['port'], c['host'], c['database']))
     e("/usr/bin/ssh -p %s %s 'sudo /usr/bin/mysqlhotcopy -u %s -p %s %s /tmp'" % (c['port'], c['host'], c['user'], c['password'], c['database']))
     e("/usr/bin/ssh -p %s %s 'sudo /bin/tar --remove-files --overwrite -cvf /tmp/%s.tar /tmp/%s'" % (c['port'], c['host'], c['database'], c['database']))
     e("/usr/bin/rsync -e 'ssh -p %s' -z %s:/tmp/%s.tar %s/%s.tar" % (c['port'], c['host'], c['database'], self.tmp_dir, c['database']))

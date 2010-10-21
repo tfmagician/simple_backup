@@ -1,5 +1,5 @@
 from simple_backup.backup_execution import BackupExecution
-from simple_backup.exceptions import ExecutionError
+from simple_backup.sb_exceptions import ExecutionError
 
 class Copy4(BackupExecution):
   def __init__(self, *args):
