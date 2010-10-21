@@ -21,11 +21,15 @@ class SimpleBackup:
     self.config = yaml.load(open(config_file).read())
     config = self.config['hosts']
 
-    # set base_dir attribute.
+    # set dir attribute.
     self.base_dir = base_dir
     self.archive_dir = '%s/archive' % base_dir
+    self.init_dir(self.archive_dir)
     for type in dir_types:
       self.__dict__[type + '_dir'] = '%s/%s' % (base_dir, type)
+
+    # create the monthly archive.
+    self.archive()
 
     # create and initialize an instance for the backup setting.
     for setting in config:
@@ -40,13 +44,16 @@ class SimpleBackup:
       # initialize directory attribute for the instanse.
       for type in dir_types:
         dir = os.path.abspath('%s/%s/%s' % (base_dir, type, setting))
-        if not os.access(dir, os.F_OK):
-          try:
-            os.makedirs(dir)
-          except OSError, e:
-            logging.error(repr(e))
-            raise SystemExit(1)
+        self.init_dir(dir)
         self.__dict__[setting].__dict__[type + '_dir'] = dir
+
+  def init_dir(self, dir):
+    if not os.access(dir, os.F_OK):
+      try:
+        os.makedirs(dir)
+      except OSError, e:
+        logging.error(repr(e))
+        raise SystemExit(1)
 
   def load_module(self, module):
     """
@@ -84,13 +91,14 @@ class SimpleBackup:
     archive all backup directories.
     """ 
 
-    if time.strftime('%d') == '01':
-      cmd = 'tar --remove-files zxvf %s %s/%s.tar.gz' % (self.backup_dir, self.archive_dir, time.strftime('%Y%m%d'))
-      result = commands.getstatusoutput(cmd)
-      if result[0]:
-        logging.error('Could not create monthly archive.')
-        logging.error(result[1])
-        raise SystemExit(1)
+    if os.access(self.backup_dir, os.F_OK):
+      if time.strftime('%d') == '01':
+        cmd = 'tar --remove-files -zcvf %s/%s.tar.gz %s' % (self.archive_dir, time.strftime('%Y%m%d'), self.backup_dir)
+        result = commands.getstatusoutput(cmd)
+        if result[0]:
+          logging.error('Could not create monthly archive.')
+          logging.error(result[1])
+          raise SystemExit(1)
 
 def main(config, base_dir):
   sb = SimpleBackup(config, base_dir)
