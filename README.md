@@ -12,3 +12,8 @@
 
 1. git clone git@github.com:tfmagician/SimpleBackup.git 
 2. sudo ./SimpleBackup/setup_client.sh
+
+### for mysqlhotcopy_rdiff setting. ###
+
+1. Add the permission for RELOAD.
+  ex. GRANT RELOAD ON *.* TO user@localhost;
