@@ -73,6 +73,7 @@ class SimpleBackupTestCase(unittest.TestCase):
 
     # Call main function for test1 host.
     self.assertEqual(True, self.SimpleBackup.test1_copy1.flg_init)
+    self.assertEqual(True, self.SimpleBackup.test1_copy1.flg_execute)
     arg_dict = {
       'type': 'tests.copy1',
       'host': 'test1',
@@ -82,6 +83,30 @@ class SimpleBackupTestCase(unittest.TestCase):
 
     # Call main function for test2 host.
     self.assertEqual(True, self.SimpleBackup.test2_copy2.flg_init)
+    self.assertEqual(True, self.SimpleBackup.test2_copy2.flg_execute)
+    arg_dict = {
+      'type': 'tests.copy2',
+      'host': 'test2',
+      'setting1': 'setting_value1',
+      'setting2': 'setting_value2'}
+    self.assertEqual((arg_dict, ), self.SimpleBackup.test2_copy2.arg_init)
+
+  def test_call_main_when_set_specific_setting(self):
+    self.SimpleBackup.main('test1_copy1')
+
+    # Call main function for test1 host.
+    self.assertEqual(True, self.SimpleBackup.test1_copy1.flg_init)
+    self.assertEqual(True, self.SimpleBackup.test1_copy1.flg_execute)
+    arg_dict = {
+      'type': 'tests.copy1',
+      'host': 'test1',
+      'setting1': 'setting_value1',
+      'setting2': 'setting_value2'}
+    self.assertEqual((arg_dict, ), self.SimpleBackup.test1_copy1.arg_init)
+
+    # Call main function for test2 host.
+    self.assertEqual(True, self.SimpleBackup.test2_copy2.flg_init)
+    self.assertEqual(False, self.SimpleBackup.test2_copy2.__dict__.has_key('flg_execute'))
     arg_dict = {
       'type': 'tests.copy2',
       'host': 'test2',

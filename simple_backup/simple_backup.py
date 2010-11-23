@@ -66,12 +66,15 @@ class SimpleBackup:
       mod = getattr(mod, attr)
     return getattr(mod, attr.title().replace('_', ''))
 
-  def main(self):
+  def main(self, select = None):
     """
     execute backup for all backup hosts.
     """
 
     config = self.config['hosts']
+    if select:
+      config = {select: config[select]}
+
     for setting in config:
 
       logging.info('Backuping by setting %s.' % setting)
@@ -100,16 +103,16 @@ class SimpleBackup:
           logging.error(result[1])
           raise SystemExit(1)
 
-def main(config, base_dir):
+def main(config, base_dir, setting):
   sb = SimpleBackup(config, base_dir)
-  sb.main()
+  sb.main(setting)
 
 if __name__ == '__main__':
   try:
     opts, args = getopt.getopt(
       sys.argv[1:],
-      'c:d:',
-      ['config=', 'base_dir=', 'log_level='])
+      'c:d:s:',
+      ['config=', 'base_dir=', 'log_level=', 'setting='])
   except getopt.GetoptError:
     print "FATAL - Bat command line options / parameter."
     sys.exit(2)
@@ -117,6 +120,7 @@ if __name__ == '__main__':
   base_dir = '/home/simple_backup'
   config = base_dir + '/lib/simple_backup/config.yaml'
   log_level = 'INFO'
+  setting = None
   for o, a in opts:
     if o in ('-c', '--config'):
       config = a
@@ -124,6 +128,8 @@ if __name__ == '__main__':
       base_dir = a
     if o in ('--log_level'):
       log_level = a
+    if o in ('-s', '--setting'):
+      setting = a
 
   logging.basicConfig(
     level = getattr(logging, log_level),
@@ -131,5 +137,5 @@ if __name__ == '__main__':
     filename = '/var/log/simple_backup.log',
     filemode = 'a')
 
-  main(config, base_dir)
+  main(config, base_dir, setting)
   sys.exit(0)
