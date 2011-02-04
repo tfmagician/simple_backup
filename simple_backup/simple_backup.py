@@ -92,7 +92,7 @@ class SimpleBackup:
   def archive(self):
     """
     archive all backup directories.
-    """ 
+    """
 
     if os.access(self.backup_dir, os.F_OK):
       if time.strftime('%d') == '01':
