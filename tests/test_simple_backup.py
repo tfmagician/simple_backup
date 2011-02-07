@@ -149,7 +149,7 @@ class SimpleBackupTestCase(unittest.TestCase):
     self.SimpleBackup.archive()
 
     expected = [
-      'tar --remove-files -zcvf /home/backup/archive/20101001.tar.gz /home/backup/backup']
+      'tar zcvfP /home/backup/archive/20101001.tar.gz /home/backup/backup --remove-files']
     self.assertEqual(expected, called_cmds)
 
   def test_call_archive_when_command_is_failed(self):

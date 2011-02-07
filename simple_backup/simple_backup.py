@@ -96,7 +96,7 @@ class SimpleBackup:
 
     if os.access(self.backup_dir, os.F_OK):
       if time.strftime('%d') == '01':
-        cmd = 'tar --remove-files -zcvf %s/%s.tar.gz %s' % (self.archive_dir, time.strftime('%Y%m%d'), self.backup_dir)
+        cmd = 'tar zcvfP %s/%s.tar.gz %s --remove-files' % (self.archive_dir, time.strftime('%Y%m%d'), self.backup_dir)
         result = commands.getstatusoutput(cmd)
         if result[0]:
           logging.error('Could not create monthly archive.')

@@ -45,7 +45,7 @@ class MysqlhotcopyRdiffTestCase(unittest.TestCase):
     expected = [
       "/usr/bin/ssh -p 22 test1 'sudo /usr/bin/find /tmp -maxdepth 1 -type d -name 'database' -exec rm -rf {} \\;'",
       "/usr/bin/ssh -p 22 test1 'sudo /usr/bin/mysqlhotcopy -u backup -p password database /tmp'",
-      "/usr/bin/ssh -p 22 test1 'sudo /bin/tar --remove-files --overwrite -cvf /tmp/database.tar /tmp/database'",
+      "/usr/bin/ssh -p 22 test1 'sudo /bin/tar cvfP /tmp/database.tar /tmp/database --remove-files'",
       "/usr/bin/rsync -e 'ssh -p 22' -z test1:/tmp/database.tar /home/backup/tmp/database.tar",
       "/usr/bin/rdiff-backup /home/backup/tmp /home/backup/data"]
     self.assertEqual(expected, called_cmds)
