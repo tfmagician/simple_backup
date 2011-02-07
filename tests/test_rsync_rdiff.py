@@ -41,7 +41,7 @@ class RsyncRdiffTestCase(unittest.TestCase):
     self.RsyncRdiff.execute()
 
     expected = [
-      "/usr/bin/ssh -p 22 test1 'sudo /bin/tar --overwrite -cvf /tmp/path_to_directory.tar /path/to/directory'",
+      "/usr/bin/ssh -p 22 test1 'sudo /bin/tar cvfP /tmp/path_to_directory.tar /path/to/directory'",
       "/usr/bin/rsync -e 'ssh -p 22' -z test1:/tmp/path_to_directory.tar /home/backup/tmp/path_to_directory.tar",
       '/usr/bin/rdiff-backup /home/backup/tmp /home/backup/data']
     self.assertEqual(expected, called_cmds)
