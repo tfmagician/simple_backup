@@ -52,6 +52,6 @@ class AmazonEbsSnapshot(BackupExecution):
         snapshots.update({x.id: x.start_time})
     snapshots = sorted(snapshots.items(), key=lambda (k, v): (v, k), reverse=True)
     for i in range(int(c['keep']), len(snapshots)):
-      connect.delete_snapshot(sunapshots[i][0])
+      connect.delete_snapshot(snapshots[i][0])
 
   def rollback(self): pass
