@@ -48,7 +48,7 @@ class MysqldumpRdiff(BackupExecution):
 
     e = self.exec_cmd
     c = self.config
-    e("/usr/bin/ssh -p %s %s '/usr/bin/mysqldump -u %s -p %s %s | gzip > /tmp/%s.sql.gz'" % (c['port'], c['host'], c['user'], c['password'], c['database'], c['database']))
+    e("/usr/bin/ssh -p %s %s '/usr/bin/mysqldump -u%s -p%s %s | gzip > /tmp/%s.sql.gz'" % (c['port'], c['host'], c['user'], c['password'], c['database'], c['database']))
     e("/usr/bin/ssh -p %s %s '/bin/chmod 600 /tmp/%s.sql.gz'" % (c['port'], c['host'], c['database']))
     e("/usr/bin/scp -P %s %s:/tmp/%s.sql.gz %s" % (c['port'], c['host'], c['database'], self.tmp_dir))
     e('/usr/bin/rdiff-backup %s %s' % (self.tmp_dir, self.backup_dir))
